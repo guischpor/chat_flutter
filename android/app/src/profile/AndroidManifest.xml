@@ -5,3 +5,5 @@
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
+
+keytool -list -v -keystore "C:\Users\guisc\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
