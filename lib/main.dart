@@ -2,12 +2,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+String nome = 'Carlos';
 //imports others
 void main() {
   Firestore.instance
-      .collection('teste')
-      .document('teste')
-      .setData({'teste': 'teste'});
+      .collection('mensagens')
+      .document()
+      .collection('arqmidia')
+      .document()
+      .setData(data);
 
   runApp(MaterialApp(
     home: Home(),
