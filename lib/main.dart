@@ -35,6 +35,22 @@ Future<Null> _ensureLoggedIn() async {
   }
 }
 
+//funcao que enviar a nossa mensagem para o banco de dados
+_handleSubmitted(String text) async {
+  await _ensureLoggedIn();
+  _sendMessage(text: text);
+}
+
+//funcao enviar as mensagens
+void _sendMessage({String text, String imgUrl}) {
+  Firestore.instance.collection('messages').add({
+    'text': text,
+    'imgUrl': imgUrl,
+    'senderName': googleSignIn.currentUser.displayName,
+    'senderPhotoUrl': googleSignIn.currentUser.photoUrl
+  });
+}
+
 class MyApp extends StatelessWidget {
   final Widget child;
 
@@ -107,6 +123,7 @@ class TextComposer extends StatefulWidget {
 }
 
 class _TextComposerState extends State<TextComposer> {
+  final _textController = TextEditingController();
   bool _isComposing = false;
 
   @override
@@ -129,6 +146,7 @@ class _TextComposerState extends State<TextComposer> {
             ),
             Expanded(
               child: TextField(
+                controller: _textController,
                 decoration:
                     InputDecoration.collapsed(hintText: 'Enviar uma Mensagem'),
                 onChanged: (text) {
@@ -136,6 +154,11 @@ class _TextComposerState extends State<TextComposer> {
                     _isComposing = text.length > 0;
                   });
                 },
+                /*
+                onSubmitted: (text) {
+                  _handleSubmitted(text);
+                },
+                */
               ),
             ),
             Container(
@@ -143,11 +166,19 @@ class _TextComposerState extends State<TextComposer> {
               child: Theme.of(context).platform == TargetPlatform.iOS
                   ? CupertinoButton(
                       child: Text('Enviar'),
-                      onPressed: _isComposing ? () {} : null,
+                      onPressed: _isComposing
+                          ? () {
+                              _handleSubmitted(_textController.text);
+                            }
+                          : null,
                     )
                   : IconButton(
                       icon: Icon(Icons.send),
-                      onPressed: _isComposing ? () {} : null,
+                      onPressed: _isComposing
+                          ? () {
+                              _handleSubmitted(_textController.text);
+                            }
+                          : null,
                     ),
             ),
           ],
